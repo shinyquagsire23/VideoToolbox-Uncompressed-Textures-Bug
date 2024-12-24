@@ -8,7 +8,11 @@ import AVKit
 
 // We use the same MTLPixelFormats that WebKit does for 10-bit HEVC decoding.
 // Also it's like a half a ms faster than decoding ourselves, yippee
+#if !targetEnvironment(simulator)
 let forceFastSecretTextureFormats = true
+#else
+let forceFastSecretTextureFormats = false
+#endif
 
 // FEEDBACK: LOOK HERE
 let triggerDecompressedBugTypeA = true // Not using private MTLPixelFormats, how most developers would decode 10-bit HEVC
