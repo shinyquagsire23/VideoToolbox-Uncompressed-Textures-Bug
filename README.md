@@ -3,6 +3,10 @@
 
 VideoToolbox/CoreVideo currently has a bug, originating on visionOS 2.0/iOS 18, which causes intermediate and final render targets on color conversions to be uncompressed, resulting in a 10x-ing of GPU bandwidth which can overheat chips on streams as small as 4K, especially with multiple streams at high FPS.
 
+# CLARIFICATION
+
+I've realized this is partly PEBKAC and partly legitimate. The behavior is indeed inconsistent across different hardware, but any format not starting with `kCVPixelFormatType_Lossless` or `kCVPixelFormatType_Lossy` will incur a performance penalty on newer hardware. Why, I have no clue.
+
 ## Variant A
 
 10-bit (HDR) HEVC requires the use of private `MTLPixelFormat`s in order to decode without hitting this bug, because any format conversion will trigger the uncompressed render targets. In the sample, this format conversion is to `kCVPixelFormatType_420YpCbCr10BiPlanarFullRange`/`kCVPixelFormatType_420YpCbCr10BiPlanarVideoRange`. There are compressed `kCVPixelFormatType`s that can only be decoded by private `MTLPixelFormat`s used in Webkit.
